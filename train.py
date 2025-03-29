@@ -107,6 +107,10 @@ def train(
         description="A zip file containing the images that will be used for training. We recommend a minimum of 10 images. If you include captions, include them as one .txt file per image, e.g. my-photo.jpg should have a caption file named my-photo.txt. If you don't include captions, you can use autocaptioning (enabled by default).",
         default=None,
     ),
+    input_images_url: str = Input(
+        description="A url to the zip file containing the images that will be used for training. We recommend a minimum of 10 images. If you include captions, include them as one .txt file per image, e.g. my-photo.jpg should have a caption file named my-photo.txt. If you don't include captions, you can use autocaptioning (enabled by default).",
+        default=None,
+    ),
     trigger_word: str = Input(
         description="The trigger word refers to the object, style or concept you are training on. Pick a string that isn’t a real word, like TOK or something related to what’s being trained, like CYBRPNK. The trigger word you specify here will be associated with all images during training. Then when you use your LoRA, you can include the trigger word in prompts to help activate the LoRA.",
         default="TOK",
@@ -217,6 +221,9 @@ def train(
             skip_training_and_use_pretrained_hf_lora_url, output_path
         )
         return TrainingOutput(weights=Path(output_path))
+
+    input_images = input_images or input_images_url
+
     if not input_images:
         raise ValueError("input_images must be provided")
 
