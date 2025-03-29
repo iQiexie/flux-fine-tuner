@@ -482,7 +482,7 @@ def handle_hf_readme(hf_repo_id: str, trigger_word: Optional[str]):
 def extract_zip(input_images: Path, input_dir: Path):
     print(f"[DEBUG]: {type(input_images)=}, {input_images=}")
 
-    if isinstance(str, input_images):
+    if isinstance(input_images, str):
         t1 = time.time()
         subprocess.check_output(
             [
