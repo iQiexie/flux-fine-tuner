@@ -33,6 +33,7 @@ from layer_match import match_layers_to_optimize, available_layers_to_optimize
 
 JOB_NAME = "flux_train_replicate"
 WEIGHTS_PATH = Path("./FLUX.1-dev")
+DOWNLOAD_IMAGES = Path("./images")
 INPUT_DIR = Path("input_images")
 OUTPUT_DIR = Path("output")
 JOB_DIR = OUTPUT_DIR / JOB_NAME
@@ -472,6 +473,22 @@ def handle_hf_readme(hf_repo_id: str, trigger_word: Optional[str]):
 
 
 def extract_zip(input_images: Path, input_dir: Path):
+    print(f"[DEBUG]: {type(input_images)=}, {input_images=}")
+
+    if isinstance(str, input_images):
+        t1 = time.time()
+        subprocess.check_output(
+            [
+                "pget",
+                "-f",
+                input_images,
+                str(DOWNLOAD_IMAGES),
+            ]
+        )
+        t2 = time.time()
+        print(f"Downloaded input_images in {t2 - t1} seconds")
+        input_images = DOWNLOAD_IMAGES
+
     if not is_zipfile(input_images):
         raise ValueError("input_images must be a zip file")
 
@@ -490,6 +507,9 @@ def extract_zip(input_images: Path, input_dir: Path):
 
 def clean_up():
     logout_wandb()
+
+    if DOWNLOAD_IMAGES.exists():
+        shutil.rmtree(DOWNLOAD_IMAGES)
 
     if INPUT_DIR.exists():
         shutil.rmtree(INPUT_DIR)
