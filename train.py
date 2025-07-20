@@ -1,4 +1,5 @@
 import os
+from uuid import uuid4
 
 os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
 os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
@@ -172,6 +173,10 @@ def train(
     ),
     hf_repo_id: str = Input(
         description="Hugging Face repository ID, if you'd like to upload the trained LoRA to Hugging Face. For example, lucataco/flux-dev-lora. If the given repo does not exist, a new public repo will be created.",
+        default=None,
+    ),
+    hf_folder_path: str = Input(
+        description="Hugging Face output path",
         default=None,
     ),
     hf_token: Secret = Input(
@@ -437,7 +442,7 @@ def train(
 
             api.upload_folder(
                 repo_id=hf_repo_id,
-                folder_path=JOB_DIR,
+                folder_path=hf_folder_path or f"lora_{uuid4().hex}.lora",
                 repo_type="model",
                 use_auth_token=hf_token.get_secret_value(),
             )
