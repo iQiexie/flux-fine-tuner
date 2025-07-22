@@ -443,7 +443,7 @@ def train(
             api.upload_folder(
                 repo_id=hf_repo_id,
                 folder_path=JOB_DIR,
-                path_in_repo=hf_folder_path or f"lora_{uuid4().hex}.lora",
+                path_in_repo=hf_folder_path or f"lora_{uuid4().hex}",
                 repo_type="model",
                 use_auth_token=hf_token.get_secret_value(),
             )
